@@ -14,20 +14,20 @@ const profile = require("./controllers/profile");
 const image = require("./controllers/image");
 const auth = require("./middlewares/authorization");
 
-const db = knex({
-  client: "pg",
-  connection: process.env.DATABASE_URL || process.env.POSTGRES_URI,
-});
-
 // const db = knex({
-//   client: 'pg',
-//   connection: {
-//     connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URI,
-//     ssl: {
-//       rejectUnauthorized: true
-//     }
-//   }
+//   client: "pg",
+//   connection: process.env.DATABASE_URL || process.env.POSTGRES_URI,
 // });
+
+const db = knex({
+  client: 'pg',
+  connection: {
+    connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URI,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  }
+});
 
 const app = express();
 
