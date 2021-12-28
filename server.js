@@ -1,5 +1,4 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const bcrypt = require("bcryptjs");
 const cors = require("cors");
@@ -31,16 +30,21 @@ const db = knex({
 
 const app = express();
 
+const whitelist = ['http://localhost:3000', 'https://face-detect-smart-brain.netlify.app']
 const corsOptions = {
-  origin: "https://smart-brain-app-front.herokuapp.com",
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
 };
 
 app.use(morgan("combined"));
 app.use(helmet());
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors(corsOptions));
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("its working");
