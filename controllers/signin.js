@@ -1,27 +1,27 @@
-const jwt = require('jsonwebtoken');
+const { createSession, redisClient } = require("../lib/redis");
 
 // Redis Setup
-const redis = require('redis');
+// const redis = require('redis');
 
-// You will want to update your host to the proper address in production
-const redisClient = redis.createClient(process.env.REDIS_URI);
+// // You will want to update your host to the proper address in production
+// const redisClient = redis.createClient(process.env.REDIS_URI);
 
-const signToken = (username) => {
-  const jwtPayload = { username };
-  return jwt.sign(jwtPayload, process.env.JWT_SECRET, { expiresIn: '2 days'});
-};
+// const signToken = (username) => {
+//   const jwtPayload = { username };
+//   return jwt.sign(jwtPayload, process.env.JWT_SECRET, { expiresIn: '2 days'});
+// };
 
-const setToken = (key, value) => Promise.resolve(redisClient.set(key, value));
+// const setToken = (key, value) => Promise.resolve(redisClient.set(key, value));
 
-const createSession = (user) => {
-  const { email, id } = user;
-  const token = signToken(email);
-  return setToken(token, id)
-    .then(() => {
-      return { success: 'true', userId: id, token, user }
-    })
-    .catch(console.log);
-};
+// const createSession = (user) => {
+//   const { email, id } = user;
+//   const token = signToken(email);
+//   return setToken(token, id)
+//     .then(() => {
+//       return { success: 'true', userId: id, token, user }
+//     })
+//     .catch(console.log);
+// };
 
 const handleSignin = (db, bcrypt, req, res) => {
   const { email, password } = req.body;

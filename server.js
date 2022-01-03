@@ -11,39 +11,44 @@ const register = require("./controllers/register");
 const signin = require("./controllers/signin");
 const profile = require("./controllers/profile");
 const image = require("./controllers/image");
+const logout = require("./controllers/logout");
 const auth = require("./middlewares/authorization");
 
-// const db = knex({
-//   client: "pg",
-//   connection: process.env.DATABASE_URL || process.env.POSTGRES_URI,
-// });
-
 const db = knex({
-  client: 'pg',
-  connection: {
-    connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URI,
-    ssl: {
-      rejectUnauthorized: false
-    }
-  }
+  client: "pg",
+  connection: process.env.DATABASE_URL || process.env.POSTGRES_URI,
 });
+
+// const db = knex({
+//   client: 'pg',
+//   connection: {
+//     connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URI,
+//     ssl: {
+//       rejectUnauthorized: false
+//     }
+//   }
+// });
 
 const app = express();
 
-const whitelist = ['http://localhost:3000', 'https://face-detect-smart-brain.netlify.app']
+const whitelist = [
+  "http://localhost:3000",
+  "https://face-detect-smart-brain.netlify.app",
+];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
+      callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'))
+      callback(new Error("Not allowed by CORS"));
     }
-  }
+  },
 };
 
 app.use(morgan("combined"));
 app.use(helmet());
-app.use(cors(corsOptions));
+app.use(cors());
+//app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -65,6 +70,9 @@ app.put("/image", auth.requireAuth, (req, res) => {
 });
 app.post("/imageurl", auth.requireAuth, (req, res) => {
   image.handleApiCall(req, res);
+});
+app.get("/logout", (req, res) => {
+  logout.handleLogout(req, res);
 });
 
 const port = process.env.PORT || 5000;
