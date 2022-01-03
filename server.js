@@ -14,20 +14,20 @@ const image = require("./controllers/image");
 const logout = require("./controllers/logout");
 const auth = require("./middlewares/authorization");
 
-const db = knex({
-  client: "pg",
-  connection: process.env.DATABASE_URL || process.env.POSTGRES_URI,
-});
-
 // const db = knex({
-//   client: 'pg',
-//   connection: {
-//     connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URI,
-//     ssl: {
-//       rejectUnauthorized: false
-//     }
-//   }
+//   client: "pg",
+//   connection: process.env.DATABASE_URL || process.env.POSTGRES_URI,
 // });
+
+const db = knex({
+  client: 'pg',
+  connection: {
+    connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URI,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  }
+});
 
 const app = express();
 
@@ -47,8 +47,7 @@ const corsOptions = {
 
 app.use(morgan("combined"));
 app.use(helmet());
-app.use(cors());
-//app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get("/", (req, res) => {
